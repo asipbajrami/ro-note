@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 
 interface Note {
@@ -19,7 +19,7 @@ export default function NotesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  const fetchNotes = async () => {
+  const fetchNotes = useCallback(async () => {
     try {
       const response = await fetch(`/api/notes/${code}`);
       const data = await response.json();
@@ -29,7 +29,7 @@ export default function NotesPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [code]);
 
   const saveNote = async () => {
     if (!newNote.trim()) return;
@@ -79,7 +79,7 @@ export default function NotesPage() {
 
   useEffect(() => {
     fetchNotes();
-  }, [code]);
+  }, [fetchNotes]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
