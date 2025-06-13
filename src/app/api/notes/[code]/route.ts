@@ -5,9 +5,9 @@ const notesStorage: Map<string, Array<{ id: string; content: string; timestamp: 
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
-  const code = params.code;
+  const { code } = await params;
   const notes = notesStorage.get(code) || [];
   
   return NextResponse.json({ notes });
@@ -15,9 +15,9 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
-  const code = params.code;
+  const { code } = await params;
   const { content, title } = await request.json();
   
   if (!content) {
@@ -40,9 +40,9 @@ export async function POST(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
-  const code = params.code;
+  const { code } = await params;
   const { searchParams } = new URL(request.url);
   const noteId = searchParams.get('id');
   
